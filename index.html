@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>car game</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js"></script>
+</head>
+
+<body>
+    
+    <div class="error">
+        This is not available for Mobile View <br />
+        Please ,Open it on PC
+    </div>
+    <div class="main">
+        <div class="score"></div>
+        <div class="start-pop-up">
+            <p>Press here to start game. <br>
+                arrow keys to move car <br>
+                If you hit another cae ,you will lose
+            </p>
+        </div>
+        <div class="gameArea"> sgame display</div>
+    </div>
+
+ <audio id="audio" src="music.mp3"></audio>
+    <script>
+        // getting elements
+        const score = document.querySelector(".score");
+        const start_pop_up = document.querySelector(".start-pop-up");
+        const gameArea = document.querySelector(".gameArea");
+        const music=document.querySelector("#audio"); 
+        music.loop=true
+
+        // console.log(score);
+        // console.log(start_pop_up);
+        // console.log(gamrArea);
+        start_pop_up.addEventListener('click', start);
+
+
+
+
+
+
+
+        // keys 
+        let keys = {
+            ArrowUp: false,
+            ArrowDown: false,
+            ArrowLeft: false,
+            ArrowRight: false
+        }
+
+        let player = { speed: 5 , score:0};
+
+        const keyDown = (e) => {
+            e.preventDefault();
+            keys[e.key] = true;
+            // console.log(e.key);
+            // console.log(keys)
+        }
+        const keyUp = (e) => {
+            e.preventDefault();
+            keys[e.key] = false;
+            // console.log(keys);
+            // console.log(e.key);
+        }
+
+        document.addEventListener("keydown", keyDown);
+        document.addEventListener('keyup', keyUp);
+
+
+
+
+        function gamePlay() {
+            // start_pop_up.innerHTML="Game Start";
+            // console.log("Gamre start")
+
+            let car = document.querySelector('.car');
+            let road = gameArea.getBoundingClientRect();
+            // console.log(road)
+
+            if (player.start) {
+                    moveLine()
+                    enemyMove(car)
+                if (keys.ArrowUp && player.y > (road.top + 80)) { player.y -= player.speed };
+                if (keys.ArrowDown && player.y < (road.bottom - 70)) { player.y += player.speed };
+                if (keys.ArrowLeft && player.x > 0) { player.x -= player.speed };
+                if (keys.ArrowRight && player.x < 350) { player.x += player.speed };
+
+                car.style.left = player.x + 'px';
+                car.style.top = player.y + 'px';
+                window.requestAnimationFrame(gamePlay);
+                player.score++;
+                score.innerText="score : "+player.score++;
+            }
+        }
+
+
+// ununderstanding line
+            function moveLine(){
+                let line=document.querySelectorAll('.line');
+                line.forEach(function(item){
+                    if (item.y>=750) {
+                        item.y-=800
+                    }
+                    item.y+=player.speed;
+                   item.style.top=item.y+"px" //this line of code is I
+
+                });
+            }
+
+
+            function isCloide(a,b){
+                aRect=a.getBoundingClientRect()
+                bRect=b.getBoundingClientRect();
+                return !((aRect.bottom<bRect.top) || (aRect.top>bRect.bottom) || (aRect.right<bRect.left) || (aRect.left>bRect.right))
+            }
+                        
+            function endGame(){
+                player.start=false
+                start_pop_up.classList.remove("hide")
+            }
+// ununderstanding line
+function enemyMove(car){
+                let enemy=document.querySelectorAll('.enemy');
+                enemy.forEach(function(item){
+
+                    if (isCloide(car,item)) {
+                        console.log("Game Over..")
+                        endGame()
+                        music.pause();
+                        
+                    }
+                    if (item.y>=750) {
+                        item.y= -300;
+                        item.style.left=Math.floor(Math.random()*350)+'px'
+                    }
+                    item.y+=player.speed;
+                   item.style.top=item.y+"px" //this line of code is I
+
+                });
+            }
+        function start() {
+            // gameArea.classList.remove("hide");
+            music.play();
+            start_pop_up.classList.add("hide")
+            gameArea.innerHTML="";
+            player.start = true;
+            player.score=true
+            window.requestAnimationFrame(gamePlay);
+
+            for (let l = 0; l < 6; l++) {
+                let roadLine = document.createElement('div');
+                roadLine.setAttribute('class', 'line');
+                gameArea.appendChild(roadLine);
+                roadLine.y=l*130
+                roadLine.style.top= roadLine.y+"px"
+            
+            }
+
+
+
+
+            let car = document.createElement('div');
+            car.setAttribute('class', 'car');
+            // car.innerText='Car';
+            gameArea.appendChild(car)
+
+            player.y = car.offsetTop;
+            player.x = car.offsetLeft;
+            // console.log(player.x)
+            // console.log(player.y)
+
+                        
+                
+            for (let x = 0; x < 3; x++) {
+                let enemyCar = document.createElement('div');
+                enemyCar.setAttribute('class', 'enemy');
+                gameArea.appendChild(enemyCar);
+                enemyCar.style.background="blue";
+                enemyCar.style.left=Math.floor(Math.random()*350)+'px'
+                enemyCar.y=((x+1)*350)*-1
+                enemyCar.style.top= enemyCar.y+"px"
+
+            
+            }
+    
+    
+        }
+    </script>
+</body>
+
+</html>
