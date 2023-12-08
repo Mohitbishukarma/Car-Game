@@ -1,9 +1,8 @@
 ---
-  deployment:
-    tasks:
-      - export DEPLOYPATH = /home/mohitcom/test_sites/car_game
-      - /bin/cp index.html $DEPLOYPATH
-      - /bin/cp music.mp3 $DEPLOYPATH
-      - /bin/cp style.css $DEPLOYPATH
-      - /bin/cp main.js $DEPLOYPATH
-       
+deployment:
+  tasks:
+    - export DEPLOYPATH = /home/mohitcom/test_sites/car_game/
+    - /bin/cp index.html $DEPLOYPATH
+    - /bin/cp music.mp3 $DEPLOYPATH
+    - /bin/cp style.css $DEPLOYPATH
+    - /bin/cp main.js $DEPLOYPATH
